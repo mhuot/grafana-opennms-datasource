@@ -62,7 +62,7 @@ export class OpenNMSDatasource {
     var nodeFilterRegex = /nodeFilter\((.*)\)/;
     var nodeResourcesRegex = /nodeResources\((.*)\)/;
     var categoriesRegex = /categories\((.*)\)/;
-    var nodeCategoryFilterRegex = /NodeCategoryFilter\((.*)\)/;
+    var nodeCategoryFilterRegex = /nodeCategoryFilter\((.*)\)/;
 
     if (interpolatedQuery !== undefined) {
       var nodeFilterQuery = interpolatedQuery.match(nodeFilterRegex);
@@ -126,7 +126,11 @@ export class OpenNMSDatasource {
       _.each(response.data.children.resource, function (resource) {
         var resourceWithoutNodePrefix = resource.id.match(/node(Source)?\[.*?\]\.(.*)/);
         if (resourceWithoutNodePrefix) {
-          results.push({text: resourceWithoutNodePrefix[2], expandable: true});
+          if (resource) {
+            results.push({text: resourceWithoutNodePrefix[2], value: resourceWithoutNodePrefix[2], expandable: true});
+          } else {
+            results.push({text: "None", value: "None"});
+          }
         }
       });
       return results;
@@ -138,16 +142,15 @@ export class OpenNMSDatasource {
       url: this.url + '/rest/categories',
       method: 'GET',
       params: {
-        // filterRule: query,
+        filterRule: query,
         limit: 0
       }
     }).then(function (response) {
-      console.warn(query);
       if (response.data.count > response.data.totalCount) {
         console.warn("Filter matches " + response.data.totalCount + " records, but only " + response.data.count + " will be used.");
       }
       var results = [];
-      _.each(response.data.node, function (category) {
+      _.each(response.data.category, function (category) {
         if (category) {
           results.push({text: category.name, value: category.name, expandable: true});
         } else {
@@ -172,11 +175,11 @@ export class OpenNMSDatasource {
       }
       var results = [];
       _.each(response.data.node, function (node) {
-        var NodeCategoryFilter = node.id.toString();
+        var nodeCategoryFilter = node.id.toString();
         if (node.foreignId !== null && node.foreignSource !== null) {
-          NodeCategoryFilter = node.foreignSource + ":" + node.foreignId;
+          nodeCategoryFilter = node.foreignSource + ":" + node.foreignId;
         }
-        results.push({text: node.label, value: NodeCategoryFilter, expandable: true});
+        results.push({text: node.label, value: nodeCategoryFilter, expandable: true});
       });
       return results;
     });
