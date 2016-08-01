@@ -61,6 +61,8 @@ export class OpenNMSDatasource {
     var interpolatedQuery = _.first(this.interpolateValue(query));
     var nodeFilterRegex = /nodeFilter\((.*)\)/;
     var nodeResourcesRegex = /nodeResources\((.*)\)/;
+    var categoriesRegex = /categories\((.*)\)/;
+    var nodeCategoryFilterRegex = /NodeCategoryFilter\((.*)\)/;
 
     if (interpolatedQuery !== undefined) {
       var nodeFilterQuery = interpolatedQuery.match(nodeFilterRegex);
@@ -72,6 +74,17 @@ export class OpenNMSDatasource {
       if (nodeCriteria) {
         return this.metricFindNodeResourceQuery(nodeCriteria[1]);
       }
+
+      var categoryQuery = interpolatedQuery.match(categoriesRegex);
+      if (categoryQuery) {
+        return this.metricFindCategoryFilterQuery(categoryQuery[1]);
+      }
+
+      var nodeCategoryFilter = interpolatedQuery.match(nodeCategoryFilterRegex);
+      if (nodeCategoryFilter) {
+        return this.metricFindNodeCategoryFilterQuery(nodeCategoryFilter[1]);
+      }
+
     }
 
     return this.$q.reject("Unsupported query " + interpolatedQuery);
@@ -115,6 +128,55 @@ export class OpenNMSDatasource {
         if (resourceWithoutNodePrefix) {
           results.push({text: resourceWithoutNodePrefix[2], expandable: true});
         }
+      });
+      return results;
+    });
+  }
+
+  metricFindCategoryFilterQuery(query) {
+    return this.backendSrv.datasourceRequest({
+      url: this.url + '/rest/categories',
+      method: 'GET',
+      params: {
+        // filterRule: query,
+        limit: 0
+      }
+    }).then(function (response) {
+      console.warn(query);
+      if (response.data.count > response.data.totalCount) {
+        console.warn("Filter matches " + response.data.totalCount + " records, but only " + response.data.count + " will be used.");
+      }
+      var results = [];
+      _.each(response.data.node, function (category) {
+        if (category) {
+          results.push({text: category.name, value: category.name, expandable: true});
+        } else {
+          results.push({text: "None", value: "None"});
+        }
+      });
+      return results;
+    });
+  }
+
+  metricFindNodeCategoryFilterQuery(query) {
+    return this.backendSrv.datasourceRequest({
+      url: this.url + '/rest/nodes',
+      method: 'GET',
+      params: {
+        filterRule: 'categoryName == \'' + query + '\'',
+        limit: 0
+      }
+    }).then(function (response) {
+      if (response.data.count > response.data.totalCount) {
+        console.warn("Filter matches " + response.data.totalCount + " records, but only " + response.data.count + " will be used.");
+      }
+      var results = [];
+      _.each(response.data.node, function (node) {
+        var NodeCategoryFilter = node.id.toString();
+        if (node.foreignId !== null && node.foreignSource !== null) {
+          NodeCategoryFilter = node.foreignSource + ":" + node.foreignId;
+        }
+        results.push({text: node.label, value: NodeCategoryFilter, expandable: true});
       });
       return results;
     });
