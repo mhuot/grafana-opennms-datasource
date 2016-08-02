@@ -61,6 +61,7 @@ export class OpenNMSDatasource {
     var interpolatedQuery = _.first(this.interpolateValue(query));
     var nodeFilterRegex = /nodeFilter\((.*)\)/;
     var nodeResourcesRegex = /nodeResources\((.*)\)/;
+    // categories doesn't have a filter that can be used
     var categoriesRegex = /categories\((.*)\)/;
     var nodeCategoryFilterRegex = /nodeCategoryFilter\((.*)\)/;
 
