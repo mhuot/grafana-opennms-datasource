@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['./datasource', './query_ctrl', 'app/plugins/sdk'], function (_export, _context) {
+  "use strict";
+
   var OpenNMSDatasource, OpenNMSQueryCtrl, loadPluginCss, GenericConfigCtrl, GenericQueryOptionsCtrl;
 
   function _classCallCheck(instance, Constructor) {

@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['./constants', './interpolate', 'lodash'], function (_export, _context) {
+  "use strict";
+
   var QueryType, interpolate, _, _createClass, OpenNMSDatasource;
 
   function _classCallCheck(instance, Constructor) {
@@ -95,6 +97,10 @@ System.register(['./constants', './interpolate', 'lodash'], function (_export, _
         }, {
           key: 'metricFindQuery',
           value: function metricFindQuery(query) {
+            if (query === null || query === undefined || query === "") {
+              return this.$q.resolve([]);
+            }
+
             var interpolatedQuery = _.first(this.interpolateValue(query));
             var nodeFilterRegex = /nodeFilter\((.*)\)/;
             var nodeResourcesRegex = /nodeResources\((.*)\)/;
@@ -111,7 +117,7 @@ System.register(['./constants', './interpolate', 'lodash'], function (_export, _
               }
             }
 
-            return this.$q.reject("Unsupported query " + interpolatedQuery);
+            return this.$q.resolve([]);
           }
         }, {
           key: 'metricFindNodeFilterQuery',
@@ -120,7 +126,8 @@ System.register(['./constants', './interpolate', 'lodash'], function (_export, _
               url: this.url + '/rest/nodes',
               method: 'GET',
               params: {
-                filterRule: query
+                filterRule: query,
+                limit: 0
               }
             }).then(function (response) {
               if (response.data.count > response.data.totalCount) {
@@ -132,7 +139,7 @@ System.register(['./constants', './interpolate', 'lodash'], function (_export, _
                 if (node.foreignId !== null && node.foreignSource !== null) {
                   nodeCriteria = node.foreignSource + ":" + node.foreignId;
                 }
-                results.push({ text: nodeCriteria, expandable: true });
+                results.push({ text: node.label, value: nodeCriteria, expandable: true });
               });
               return results;
             });
@@ -373,7 +380,6 @@ System.register(['./constants', './interpolate', 'lodash'], function (_export, _
               }
             }).then(function (results) {
               query = query.toLowerCase();
-
               var attributes = [];
               _.each(results.data.rrdGraphAttributes, function (value, key) {
                 if (key.toLowerCase().indexOf(query) >= 0) {

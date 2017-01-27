@@ -58,6 +58,10 @@ export class OpenNMSDatasource {
 
   // Used by template queries
   metricFindQuery(query) {
+    if (query === null || query === undefined || query === "") {
+      return this.$q.resolve([]);
+    }
+
     var interpolatedQuery = _.first(this.interpolateValue(query));
     var nodeFilterRegex = /nodeFilter\((.*)\)/;
     var nodeResourcesRegex = /nodeResources\((.*)\)/;
@@ -88,7 +92,7 @@ export class OpenNMSDatasource {
 
     }
 
-    return this.$q.reject("Unsupported query " + interpolatedQuery);
+    return this.$q.resolve([]);
   }
 
   metricFindNodeFilterQuery(query) {
@@ -450,7 +454,6 @@ export class OpenNMSDatasource {
       }
     }).then(function (results) {
       query = query.toLowerCase();
-
       var attributes = [];
       _.each(results.data.rrdGraphAttributes, function (value, key) {
         if (key.toLowerCase().indexOf(query) >= 0) {

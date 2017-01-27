@@ -26,12 +26,12 @@
       {"name": "Query Editor", "path": "img/screenshot_query_editor.png"},
       {"name": "Metric Query", "path": "img/screenshot_metric_query_nodes.png"}
     ],
-    "version": "2.0.1",
-    "updated": "2016-05-11"
+    "version": "2.1.0",
+    "updated": "2017-01-04"
   },
 
   "dependencies": {
-    "grafanaVersion": "3.x.x",
+    "grafanaVersion": "4.x.x",
     "plugins": [ ]
   }
 }

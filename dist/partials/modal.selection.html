@@ -1,10 +1,10 @@
 <div ng-controller="OpenNMSModalSelectionCtrl as ctrl">
     <div class="modal-header">
-        <ul class="tight-form-list" role="menu">
-            <li class="tight-form-item">
-                Search:
-            </li>
-            <li>
+        <div class="gf-form-inline">
+            <div class="gf-form">
+                <span class="width-4">
+                    Search:
+                </span>
                 <input type="text"
                        class="tight-form-input"
                        ng-model="ctrl.query"
@@ -12,9 +12,8 @@
                        ng-change="ctrl.searchForRows()"
                        data-min-length=0 data-items=100
                 >
-            </li>
-        </ul>
-        <div class="clearfix"></div>
+            </div>
+        </div>
     </div>
 
     <div class="modal-body modal-selector">

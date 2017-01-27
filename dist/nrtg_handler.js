@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['moment'], function (_export, _context) {
+  "use strict";
+
   var moment, _createClass, NRTGHandler;
 
   function _classCallCheck(instance, Constructor) {

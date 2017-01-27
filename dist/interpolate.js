@@ -1,6 +1,8 @@
 "use strict";
 
 System.register(["lodash"], function (_export, _context) {
+  "use strict";
+
   var _;
 
   function cartesianProductOfArrays(arrays) {
@@ -91,75 +93,75 @@ System.register(["lodash"], function (_export, _context) {
    *    optionally override the function used to substitute the variable reference in a string with the variables's value
    * @returns an array of objects, if no substitutions were performed, the array will contain the original object
    */
+  function interpolate(object, attributes, variables, callback, containsVariable, replace) {
+    // Use default for the functions when undefined
+    if (callback === undefined) {
+      callback = function callback() {};
+    }
+    if (containsVariable === undefined) {
+      containsVariable = defaultContainsVariable;
+    }
+    if (replace === undefined) {
+      replace = defaultReplace;
+    }
+
+    // Add the index variable with a single value
+    var variablesWithIndex = _.clone(variables);
+    variablesWithIndex.push({ name: 'index', value: [0] });
+
+    // Collect the list of variables that are referenced by one or more of the keys
+    var referencedVariables = [];
+    _.each(variablesWithIndex, function (variable) {
+      var isVariableReferenced = _.find(attributes, function (attribute) {
+        return containsVariable(object[attribute], variable.name);
+      });
+
+      if (isVariableReferenced) {
+        referencedVariables.push(variable);
+      }
+    });
+
+    if (referencedVariables.length < 1) {
+      // No variables are referenced, nothing to substitute
+      callback(object);
+      return [object];
+    }
+
+    // Generate all possible permutations of the referenced variable's values
+    var productOfAllVariables = cartesianProductOfVariables(referencedVariables);
+
+    // Perform the required variable substitution
+    var objects = [];
+    var index = 0;
+    _.each(productOfAllVariables, function (rowOfReferencedVariables) {
+      // Update the value of the index variable to reflect the index of the row
+      _.each(rowOfReferencedVariables, function (variable) {
+        if (variable.name === 'index') {
+          variable.value = 'idx' + index;
+          index += 1;
+        }
+      });
+
+      var o = _.clone(object);
+      _.each(attributes, function (attribute) {
+        o[attribute] = replace(o[attribute], rowOfReferencedVariables);
+      });
+
+      callback(o);
+
+      objects.push(o);
+    });
+
+    return objects;
+  }
+
+  _export("interpolate", interpolate);
+
   return {
     setters: [function (_lodash) {
       _ = _lodash.default;
     }],
-    execute: function () {
-      function interpolate(object, attributes, variables, callback, containsVariable, replace) {
-        // Use default for the functions when undefined
-        if (callback === undefined) {
-          callback = function callback() {};
-        }
-        if (containsVariable === undefined) {
-          containsVariable = defaultContainsVariable;
-        }
-        if (replace === undefined) {
-          replace = defaultReplace;
-        }
-
-        // Add the index variable with a single value
-        var variablesWithIndex = _.clone(variables);
-        variablesWithIndex.push({ name: 'index', value: [0] });
-
-        // Collect the list of variables that are referenced by one or more of the keys
-        var referencedVariables = [];
-        _.each(variablesWithIndex, function (variable) {
-          var isVariableReferenced = _.find(attributes, function (attribute) {
-            return containsVariable(object[attribute], variable.name);
-          });
-
-          if (isVariableReferenced) {
-            referencedVariables.push(variable);
-          }
-        });
-
-        if (referencedVariables.length < 1) {
-          // No variables are referenced, nothing to substitute
-          callback(object);
-          return [object];
-        }
-
-        // Generate all possible permutations of the referenced variable's values
-        var productOfAllVariables = cartesianProductOfVariables(referencedVariables);
-
-        // Perform the required variable substitution
-        var objects = [];
-        var index = 0;
-        _.each(productOfAllVariables, function (rowOfReferencedVariables) {
-          // Update the value of the index variable to reflect the index of the row
-          _.each(rowOfReferencedVariables, function (variable) {
-            if (variable.name === 'index') {
-              variable.value = 'idx' + index;
-              index += 1;
-            }
-          });
-
-          var o = _.clone(object);
-          _.each(attributes, function (attribute) {
-            o[attribute] = replace(o[attribute], rowOfReferencedVariables);
-          });
-
-          callback(o);
-
-          objects.push(o);
-        });
-
-        return objects;
-      }
-
-      _export("interpolate", interpolate);
-    }
+    execute: function () {}
   };
 });
 //# sourceMappingURL=interpolate.js.map

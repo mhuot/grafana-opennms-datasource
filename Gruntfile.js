@@ -20,6 +20,10 @@ module.exports = function(grunt) {
         expand: true,
         src: [ 'plugin.json', 'README.md', 'img/*' ],
         dest: 'dist'
+      },
+      deploy: {
+        src: ['**/*'],
+        dest: '/var/lib/grafana/plugins/opennms-datasource/'
       }
     },
 
@@ -27,6 +31,11 @@ module.exports = function(grunt) {
       rebuild_all: {
         files: ['src/**/*', 'plugin.json'],
         tasks: ['default'],
+        options: {spawn: false}
+      },
+      deploy: {
+        files: ['src/**/*', 'plugin.json'],
+        tasks: ['default', 'copy:deploy'],
         options: {spawn: false}
       }
     },

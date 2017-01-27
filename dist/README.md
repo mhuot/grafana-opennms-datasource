@@ -6,7 +6,7 @@ This datasource enables users to query metrics collected and persisted by [OpenN
 
 #### Storage engine agnostic
 
-Retrieve metrics stored in any of the available persistence engines .i.e. rrdtool, JRobin and [Newts](https://github.com/OpenNMS/newts).
+Retrieve metrics stored in any of the available persistence engines i.e. rrdtool, JRobin and [Newts](https://github.com/OpenNMS/newts).
 
 #### Template support
 
@@ -25,24 +25,5 @@ Derive new series using
 
 ### Changelog
 
-##### 2.0.1 (05/11)
+See [Changelog](https://github.com/OpenNMS/grafana-opennms-datasource/blob/master/CHANGELOG.md)
 
-* Updated query editor to use the updated Grafana 3.0.0 styles. Fixes [#2](https://github.com/OpenNMS/grafana-opennms-datasource/issues/2)
-
-##### 2.0.0 (04/16)
-
-* Updated the datasource to be compatible with Grafana 3.0.0
-* Added support for sub-attributes used by some of the poller modules (requires Horizon v17.x or greater)
-* Added support for metric queries (requires Horizon v18.x or greater)
-* Added support for using template variables in filter expression
-
-#### 1.1.0 (09/15)
-
-* Added support for both single-valued and multi-valued template variables
-* Added support for testing the datasource, introduced in Grafana 2.1.0
-* Help information is now available in the datasource editor
-* Added support for filters (requires Horizon v17.x or greater)
-
-#### 1.0.0-rc1 (06/15)
-
-* Initial datasource implementation

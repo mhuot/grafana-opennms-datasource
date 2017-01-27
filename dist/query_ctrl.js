@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['./modal_ctrl', './constants', 'app/plugins/sdk', 'lodash'], function (_export, _context) {
+  "use strict";
+
   var QueryType, QueryCtrl, _, _createClass, OpenNMSQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {
@@ -66,7 +68,7 @@ System.register(['./modal_ctrl', './constants', 'app/plugins/sdk', 'lodash'], fu
         function OpenNMSQueryCtrl($rootScope, $scope, $injector, $q, $modal) {
           _classCallCheck(this, OpenNMSQueryCtrl);
 
-          var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(OpenNMSQueryCtrl).call(this, $scope, $injector));
+          var _this = _possibleConstructorReturn(this, (OpenNMSQueryCtrl.__proto__ || Object.getPrototypeOf(OpenNMSQueryCtrl)).call(this, $scope, $injector));
 
           _this.types = QueryType;
 
@@ -121,7 +123,7 @@ System.register(['./modal_ctrl', './constants', 'app/plugins/sdk', 'lodash'], fu
 
               // Limit the results - it takes along time to render if there are too many
               var totalCount = filteredResources.length;
-              filteredResources = _.first(filteredResources, self.datasource.searchLimit);
+              filteredResources = _.take(filteredResources, self.datasource.searchLimit);
 
               return {
                 'count': filteredResources.length,
